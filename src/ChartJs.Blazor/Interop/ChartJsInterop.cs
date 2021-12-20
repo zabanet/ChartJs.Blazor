@@ -96,9 +96,17 @@ namespace ChartJs.Blazor.Interop
         /// <returns></returns>
         public static ValueTask<bool> UpdateChart(this IJSRuntime jsRuntime, ConfigBase chartConfig)
         {
-            dynamic dynParam = StripNulls(chartConfig);
-            Dictionary<string, object> param = ConvertExpandoObjectToDictionary(dynParam);
-            return jsRuntime.InvokeAsync<bool>($"{ChartJsInteropName}.updateChart", param);
+            try
+            {
+                dynamic dynParam = StripNulls(chartConfig);
+                Dictionary<string, object> param = ConvertExpandoObjectToDictionary(dynParam);
+                return jsRuntime.InvokeAsync<bool>($"{ChartJsInteropName}.updateChart", param);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"{DateTime.Now} ChartJs - UPDATE ERROR!!!");
+                return new ValueTask<bool>(false);
+            }
         }
 
         /// <summary>
